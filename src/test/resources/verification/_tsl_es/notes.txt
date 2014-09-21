@@ -1,0 +1,3 @@
+         The CertRef on the SigningCertificate property doesn't seem to obey to
+         the DN encoding rules: the RDN are in the same order as the certificate
+         instead of reverse order as stated on RFC 4514.

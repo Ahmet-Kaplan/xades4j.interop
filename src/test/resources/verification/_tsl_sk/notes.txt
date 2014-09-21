@@ -1,0 +1,25 @@
+Couldn't get this one to work. The certificate's issuer name didn't match
+the issuer on KeyInfo nor in SigningCertificate. This is very weird because
+everything appears to be ok.
+Still, I commented the library's code to skip those checks and the
+properties on the signature were valid.
+
+SignaturePolicyDocumentProvider spp = new SignaturePolicyDocumentProvider()
+        {
+            @Override
+            public InputStream getSignaturePolicyDocumentStream(
+                    ObjectIdentifier sigPolicyId)
+            {
+                if (!sigPolicyId.getIdentifierType().equals(IdentifierType.OIDAsURI) ||
+                        !sigPolicyId.getIdentifier().equals("1.3.158.36061701.0.0.1.10.4.0.12"))
+                    return null;
+                try
+                {
+                    return new FileInputStream("./src/test/cert/tsl/sk/20100823000000zsignaturepolicy.der");
+                } catch (FileNotFoundException ex)
+                {
+                    return null;
+                }
+            }
+        };
+
