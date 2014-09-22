@@ -18,8 +18,15 @@ package xades4j.interop.verification;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.security.KeyStore;
+import java.security.cert.CertStore;
+import java.security.cert.Certificate;
+import java.security.cert.CollectionCertStoreParameters;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
@@ -81,14 +88,25 @@ public class SignatureVerficationTest
     {
         this.testCase = testCase;
     }
-    
+
     @Test
     public void test() throws Exception
     {
+        KeyStore trustAnchors = KeyStore.getInstance("jks");
+        trustAnchors.load(null);
+        for (Certificate cert : testCase.trustAnchors) {
+            trustAnchors.setCertificateEntry(UUID.randomUUID().toString(), cert);
+        }
+        
+        Collection validationData = new ArrayList();
+        validationData.addAll(testCase.certificates);
+        validationData.addAll(testCase.crls);
+        CertStore validationDataStore = CertStore.getInstance("Collection", new CollectionCertStoreParameters(validationData)); 
+        
         CertificateValidationProvider v = new PKIXCertificateValidationProvider(
-                testCase.trustAnchors,
-                false,
-                testCase.validationData);
+                trustAnchors,
+                !testCase.crls.isEmpty(), // Enable revocation if we have CRLs
+                validationDataStore);
         XadesVerificationProfile p = new XadesVerificationProfile(v);
         XadesVerifier verifier = p.newVerifier();
         
