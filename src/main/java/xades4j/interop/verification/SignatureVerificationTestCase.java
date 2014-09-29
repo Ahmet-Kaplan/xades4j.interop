@@ -92,7 +92,7 @@ public class SignatureVerificationTestCase {
                 throw new IllegalArgumentException("Missing file extension");
             }
             
-            String ext = fileNameParts[fileNameParts.length - 1];
+            String ext = fileNameParts[fileNameParts.length - 1].toLowerCase();
             FileInputStream stream = new FileInputStream(file);
             
             // Certificates

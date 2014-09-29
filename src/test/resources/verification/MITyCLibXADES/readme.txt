@@ -1,0 +1,1 @@
+Signatures produced using MITyCLibXAdES, the XAdES library on "Componentes de Firma" (http://oficinavirtual.mityc.es/componentes).
